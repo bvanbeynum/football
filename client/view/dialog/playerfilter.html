@@ -1,0 +1,67 @@
+<md-dialog aria-label="List dialog">
+	<md-dialog-content>
+			
+		<div ng-show="isLoading" flex="grow" layout="row" layout-align="center center">
+			<div layout="column" layout-align="center center">
+				<md-progress-circular class="md-primary md-margin" md-diameter="40"></md-progress-circular>
+				<div class="md-margin">Loading</div>
+			</div>
+		</div>
+		
+		<div class="panelError" ng-show="errorMessage && errorMessage.length > 0">
+			{{errorMessage}}
+		</div>
+		
+		<md-list ng-show="!isLoading">
+			<md-list-item layout="row" layout-align="space-between center">
+				<span flex>Year</span>
+				
+				<md-input-container>
+					<label>Year</label>
+					<md-select ng-model="filters.year" ng-change="updateFilter()">
+						<md-option ng-repeat="year in yearOptions" ng-value="year">{{year}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="space-between center">
+				<span flex>Season</span>
+				
+				<md-input-container>
+					<label>Season</label>
+					<md-select ng-model="filters.season" ng-change="updateFilter()">
+						<md-option ng-repeat="season in seasonOptions" ng-value="season">{{season}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="space-between center">
+				<span flex>Division</span>
+				
+				<md-input-container>
+					<label>Division</label>
+					<md-select ng-model="filters.division" ng-change="updateFilter()">
+						<md-option ng-repeat="division in divisionOptions"  ng-value="division">{{division}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="space-between center">
+				<span flex>Team</span>
+				
+				<md-input-container>
+					<label>Team</label>
+					<md-select ng-model="filters.team">
+						<md-option ng-repeat="team in teamOptions" ng-value="team" ng-selected="filters.team.id == team.id">{{team.name}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+		</md-list>
+	</md-dialog-content>
+		
+	<md-dialog-actions>
+		<md-button ng-click="cancel()" class="md-primary">Cancel</md-button>
+		<md-button ng-click="clear()" class="md-primary">Clear</md-button>
+		<md-button ng-click="ok()" class="md-primary" ng-show="!isLoading">OK</md-button>
+	</md-dialog-actions>
+</md-dialog>

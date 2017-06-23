@@ -1,0 +1,38 @@
+body {
+	font-family: Verdana, sans-serif;
+}
+
+md-list-item .md-button {
+	text-align: left;
+}
+
+.md-button {
+	text-transform: capitalize;
+}
+
+.listIcon {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+}
+.listLetter {
+	font-size: 20px;
+	color: rgb(250,250,250);
+}
+.floatingButton {
+	position: absolute;
+	bottom: 5%;
+	right: 5%;
+}
+.editPanel {
+	background: rgb(255,255,255);
+}
+.panelError {
+	margin: 20px 0px;
+	color: red;
+	font-size: .75em;
+}
+
+:focus {
+	outline: none;
+}

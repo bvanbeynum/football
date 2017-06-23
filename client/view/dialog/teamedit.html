@@ -1,0 +1,108 @@
+<style>
+.colorPreview {
+	width: 20px;
+	height: 20px;
+	border: rgb(140,140,140) 2px solid;
+	border-radius: 4px;
+}
+</style>
+
+<md-dialog aria-label="Team">
+	<md-dialog-content>
+		
+		<md-toolbar>
+			<div class="md-toolbar-tools" layout="row">
+				<md-button class="md-icon-button" aria-label="Close" ng-click="close()">
+					<md-icon>
+						<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+							<path d="M0 0h24v24H0z" fill="none"/>
+						</svg>
+					</md-icon>
+				</md-button>
+				
+				<h2 flex="grow">Team Edit</h2>
+				
+				<md-button class="md-icon-button" aria-label="Save" ng-click="save()" ng-disabled="isLoading">
+					<md-icon>
+						<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M0 0h24v24H0z" fill="none"/>
+							<path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+						</svg>
+					</md-icon>
+				</md-button>
+				
+				<md-button class="md-icon-button" aria-label="Delete" ng-click="delete()" ng-show="team.id !== undefined" ng-disabled="isLoading">
+					<md-icon>
+						<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+							<path d="M0 0h24v24H0z" fill="none"/>
+						</svg>
+					</md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		
+		<div class="panelError" ng-show="errorMessage && errorMessage.length > 0">
+			{{errorMessage}}
+		</div>
+		
+		<md-list>
+			<md-list-item layout="row" layout-align="start center">
+				<md-input-container flex>
+					<label>Name</label>
+					<input ng-model="team.name" required>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="start center">
+				<md-input-container flex>
+					<label>Coach</label>
+					<input ng-model="team.coach">
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="start center">
+				<md-input-container flex>
+					<label>Year</label>
+					<md-select ng-model="team.year" required>
+						<md-option ng-repeat="year in yearOptions" ng-value="year">{{year}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="start center">
+				<md-input-container flex>
+					<label>Division</label>
+					<md-select ng-model="team.division" required>
+						<md-option ng-repeat="division in divisionOptions" ng-value="division">{{division}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="start center">
+				<md-input-container flex>
+					<label>Season</label>
+					<md-select ng-model="team.season" required>
+						<md-option ng-repeat="season in seasonOptions" ng-value="season">{{season}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="start center">
+				<md-input-container flex>
+					<label>Color</label>
+					<md-select ng-model="team.color" required>
+						<md-option ng-repeat="color in colorOptions" ng-value="color">{{color}}</md-option>
+					</md-select>
+				</md-input-container>
+				
+				<div layout="row" layout-align="center center" class="md-margin">
+					<div class="colorPreview" md-colors="{'background-color': team.color}"></div>
+				</div>
+			</md-list-item>
+			
+		</md-list>
+			
+	</md-dialog-content>
+</md-dialog>

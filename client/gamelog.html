@@ -1,0 +1,64 @@
+<html ng-app="recApp">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+<link rel="stylesheet" href="css/gamelog.css"
+</head>
+<body ng-controller="recCtl">
+
+<div layout="column" ng-cloak>
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<md-button class="md-icon-button" aria-label="Settings">
+				<md-icon>
+					<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+						<path d="M0 0h24v24H0z" fill="none"/>
+						<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+					</svg>
+				</md-icon>
+			</md-button>
+			
+			<h2>Select Player</h2>
+		</div>
+	</md-toolbar>
+	
+	<div layout="column" layout-align="space-around">
+		<div ng-repeat="player in players" class="player md-margin md-padding" layout="row" md-whiteframe="1">
+			<div class="playerIcon" md-colors="{background: 'accent'}" layout="column" layout-align="center center">
+				<div class="playerNumber">{{player.number}}</div>
+			</div>
+			
+			<div layout="column" flex class="playerContainer">
+				<div class="playerName" flex>{{player.name}}</div>
+				
+				<div layout="row">
+					<div ng-repeat="stat in statCategories" flex layout="column" class="stat">
+						<div class="statHeader">{{stat.abbrivation}}</div>
+						<div class="statValue">0</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--
+	<div layout="row" layout-align="space-around start" layout-wrap layout-padding>
+		<div layout="column" layout-align="center center" ng-repeat="player in players" class="player">
+			<div class="playerIcon" md-colors="{background: 'accent'}" layout="column" layout-align="center center">
+				<div class="playerNumber">#{{player.number}}</div>
+			</div>
+			<div class="playerName">{{player.name}}</div>
+		</div>
+	</div>
+	-->
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+<script src="js/gamelog.js"></script>
+</body>
+</html>

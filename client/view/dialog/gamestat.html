@@ -1,0 +1,74 @@
+<style>
+.tile, .tile:focus {
+	width: 100px;
+	height: 100px;
+	position: relative;
+	overflow: hidden;
+	outline: none;
+	border-radius: 4px;
+}
+.green {
+	background: #b9f6ca;
+}
+
+.label {
+	position: absolute;
+	top: 44px;
+	transition: top .5s cubic-bezier(0.85, -0.41, 0.25, 0.96);
+}
+.labelHide {
+	top: -20px;
+}
+
+.input {
+	position: absolute;
+	top: 95px;
+	transition: top .5s cubic-bezier(0.85, -0.41, 0.25, 0.96);
+}
+.inputShow {
+	top: 10px;
+}
+</style>
+
+<md-dialog aria-label="Add Stat">
+	<md-toolbar>
+		<div class="md-toolbar-tools" layout="row">
+			<h2>{{player.firstName}} {{player.lastName}}</h2>
+		</div>
+	</md-toolbar>
+	
+	<md-dialog-content>
+		
+		<md-subheader>Offense</md-subheader>
+		
+		<div layout="row" layout-align="space-around center" layout-wrap class="md-padding">
+			<div ng-repeat="stat in stats | filter: {formation: 'offense'}" md-whiteframe="{{stat.selected ? 1 : 3}}" ng-class="{'green': stat.selected}" class="tile md-margin" layout="column" layout-align="center center" ng-click="selectStat(stat)">
+				<div class="label" ng-class="{'labelHide': stat.isEdit}">{{stat.name}}</div>
+				
+				<md-input-container class="input" ng-class="{inputShow: stat.isEdit}" ontransitionend="transition(stat)">
+					<label>{{stat.name}}</label>
+					<input type="number" setfocus="stat.isFocus" ng-model="stat.value">
+				</md-input-container>
+			</div>
+		</div>
+		
+		<md-subheader>Defense</md-subheader>
+			
+		<div layout="row" layout-align="space-around center" layout-wrap class="md-padding">
+			<div ng-repeat="stat in stats | filter: {formation: 'defense'}" md-whiteframe="{{stat.selected ? 1 : 3}}" ng-class="{'green': stat.selected}" class="tile md-margin" layout="column" layout-align="center center" ng-click="selectStat(stat)">
+				<div class="label" ng-class="{'labelHide': stat.isEdit}">{{stat.name}}</div>
+				
+				<md-input-container class="input" ng-class="{inputShow: stat.isEdit}" ontransitionend="transition(stat)">
+					<label>{{stat.name}}</label>
+					<input type="number" setfocus="stat.isFocus">
+				</md-input-container>
+			</div>
+			
+		</div>
+	</md-dialog-content>
+	
+	<md-dialog-actions>
+		<md-button ng-click="cancel()" class="md-primary">Cancel</md-button>
+		<md-button ng-click="ok()" class="md-primary">OK</md-button>
+	</md-dialog-actions>
+</md-dialog>

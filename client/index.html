@@ -1,0 +1,64 @@
+<html ng-app="recApp">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+<link rel="stylesheet" href="css/global.css">
+</head>
+<body ng-controller="recCtl" layout>
+
+<div layout="row" flex="grow" ng-cloak>
+
+	<md-sidenav md-component-id="left" class="md-sidenav-left" md-whiteframe="4">
+		<md-toolbar class="md-accent">
+			<div class="md-toolbar-tools" layout="row" layout-align="end center">
+				<md-button class="md-icon-button" aria-label="Close" ng-click="closeNav()">
+					<md-icon>
+						<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+							<path d="M0 0h24v24H0z" fill="none"/>
+						</svg>
+					</md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		
+		<md-list>
+			<md-list-item>
+				<md-button ng-click="navigate('')">Home</md-button>
+			</md-list-item>
+			
+			<md-list-item>
+				<md-button>Games</md-button>
+			</md-list-item>
+			
+			<md-divider></md-divider>
+			
+			<md-subheader>Management</md-subheader>
+			
+			<md-list-item>
+				<md-button ng-click="navigate('/teams')">Teams</md-button>
+			</md-list-item>
+			
+			<md-list-item>
+				<md-button ng-click="navigate('/players')">Players</md-button>
+			</md-list-item>
+			
+			<md-divider></md-divider>
+		</md-list>
+	</md-sidenav>
+	
+	<md-content flex="grow" layout="column" ng-view></md-content>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.js"></script>
+
+<script src="js/global.js"></script>
+<script src="js/dialog.js"></script>
+</body>
+</html>

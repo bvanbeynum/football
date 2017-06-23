@@ -1,0 +1,66 @@
+<md-dialog aria-label="Select Teams">
+	<md-dialog-content class="md-padding">
+		
+		<div ng-show="isLoading" flex="grow" layout="row" layout-align="center center">
+			<div layout="column" layout-align="center center">
+				<md-progress-circular class="md-primary md-margin" md-diameter="40"></md-progress-circular>
+				<div class="md-margin">Loading</div>
+			</div>
+		</div>
+		
+		<div class="panelError" ng-show="errorMessage && errorMessage.length > 0">
+			{{errorMessage}}
+		</div>
+		
+		<md-list ng-show="!isLoading">
+			
+			<md-list-item layout="row" layout-align="start center">
+				<span flex>Division</span>
+				
+				<md-input-container>
+					<label>Division</label>
+					
+					<md-select ng-model="game.division" ng-change="updateTeams()" required>
+						<md-option ng-repeat="division in divisions" ng-value="division">{{division}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="start center">
+				<span flex>Home</span>
+				
+				<md-input-container>
+					<label>Team</label>
+					
+					<md-select ng-model="game.teamHome" ng-disabled="game.division == undefined"  required>
+						<md-option ng-repeat="team in selectTeams" ng-value="team" ng-selected="team.id == game.teamHome.id">{{team.name}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+			<md-list-item layout="row" layout-align="start center">
+				<span flex>Away</span>
+				
+				<md-input-container>
+					<label>Team</label>
+					
+					<md-select ng-model="game.teamAway" ng-disabled="game.division == undefined" required>
+						<md-option ng-repeat="team in selectTeams" ng-value="team" ng-selected="team.id == game.teamAway.id">{{team.name}}</md-option>
+					</md-select>
+				</md-input-container>
+			</md-list-item>
+			
+		</md-list>
+
+	</md-dialog-content>
+	
+	<md-dialog-actions>
+		
+		<md-button ng-click="addTeam()" class="md-primary">Add Team</md-button>
+		<md-button ng-click="cancel()" class="md-primary">Cancel</md-button>
+		<md-button ng-click="ok()" class="md-primary" ng-disabled="isLoading || game.division == undefined || game.teamHome == undefined || game.teamAway == undefined">
+			Start Game
+		</md-button>
+		
+	</md-dialog-actions>
+</md-dialog>
