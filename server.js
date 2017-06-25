@@ -28,8 +28,8 @@ app.set("root", __dirname);
 
 // Routes =======================================================================
 
-// require("./server/api")(app);
-// require("./server/app")(app);
+require("./server/api")(app);
+require("./server/app")(app);
 require("./server/static")(app);
 
 // listen (start app with node server.js) ======================================
