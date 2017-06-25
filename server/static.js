@@ -4,7 +4,7 @@ var config = require("./config");
 
 module.exports = function (app) {
 	
-	app.get("/", function(request, response) {
+	app.get("/9999", function(request, response) {
 		var session = (Math.floor(Math.random() * 100000000000)) + "";
 		
 		var sendFile = function () {

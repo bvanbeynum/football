@@ -12,7 +12,7 @@ var config = require("./server/config");
 // Config =======================================================================
 
 mongoose.Promise = require("bluebird");
-mongoose.connect("mongodb://" + config.mongo.user + ":" + config.mongo.password + "@" + config.mongo.server + "/" + config.mongo.database + "?authSource=admin");
+// mongoose.connect("mongodb://" + config.mongo.user + ":" + config.mongo.password + "@" + config.mongo.server + "/" + config.mongo.database + "?authSource=admin");
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -23,9 +23,8 @@ app.set("root", __dirname);
 
 // Routes =======================================================================
 
-// require("./server/token")(app);
-require("./server/api")(app);
-require("./server/app")(app);
+// require("./server/api")(app);
+// require("./server/app")(app);
 require("./server/static")(app);
 
 // listen (start app with node server.js) ======================================
