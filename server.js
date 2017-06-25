@@ -12,7 +12,7 @@ var config = require("./server/config");
 // Config =======================================================================
 
 mongoose.Promise = require("bluebird");
-mongoose.connect("mongodb://" + config.mongo.user + ":" + config.mongo.password + "@localhost/" + config.mongo.database + "?authSource=admin");
+mongoose.connect("mongodb://" + config.mongo.user + ":" + config.mongo.password + "@" + config.mongo.server + "/" + config.mongo.database + "?authSource=admin");
 
 app.use(cookieParser());
 app.use(bodyParser.json());
