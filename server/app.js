@@ -310,7 +310,7 @@ module.exports = function (app) {
 	});
 	
 	app.post("/app/playeredit/save", function (request, response) {
-		if (!request.body.player || !request.body.player.firstName || !request.body.player.lastName || !request.body.player.number || !request.body.player.age) {
+		if (!request.body.player || !request.body.player.number) {
 			response.status(500).send("Invalid player save request");
 			return;
 		}

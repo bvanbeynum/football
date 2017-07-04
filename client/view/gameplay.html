@@ -122,8 +122,8 @@ table.playerTable {
 					<th>FLG</th>
 					<th>DFT</th>
 				</tr>
-				<tr ng-repeat="player in playerDisplay" ng-click="addStat(player)">
-					<td>{{player.displayName}}</td>
+				<tr ng-repeat="player in playerDisplay | orderBy: 'number'" ng-click="addStat(player)">
+					<td>{{player.number}}. {{player.displayName}}</td>
 					<td>{{player.stats.Reception || 0}}</td>
 					<td>{{player.stats.Yards || 0}}</td>
 					<td>{{player.stats.Points || 0}}</td>

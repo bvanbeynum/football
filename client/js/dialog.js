@@ -184,7 +184,7 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog) {
 	$scope.isLoading = true;
 	
 	if ($scope.player.id) {
-		$scope.header = "Edit " + $scope.player.firstName + " " + $scope.player.lastName;
+		$scope.header = "Edit #" + $scope.player.number + " " + $scope.player.firstName + " " + $scope.player.lastName;
 	}
 	else {
 		$scope.header = "Add Player";
@@ -214,14 +214,9 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog) {
 		});
 	
 	$scope.save = function () {
-		if	(
-			!player.firstName || !player.firstName.length > 0
-			|| !player.lastName || !player.lastName.length > 0
-			|| !player.number
-			|| !player.age
-			) {
-				$scope.errorMessage = "Required fields missing";
-				return;
+		if	(!player.number || !player.team || !player.team.id) {
+			$scope.errorMessage = "Required fields missing";
+			return;
 		}
 		
 		$scope.isLoading = true;
@@ -247,9 +242,6 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog) {
 			
 			$scope.isLoading = false;
 		});
-	};
-	
-	$scope.delete = function () {
 	};
 	
 	$scope.close = function () {

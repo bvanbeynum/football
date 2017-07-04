@@ -20,15 +20,6 @@
 					</svg>
 				</md-icon>
 			</md-button>
-			
-			<md-button class="md-icon-button" aria-label="Delete" ng-click="delete()" ng-show="player.id !== undefined" ng-disabled="isLoading">
-				<md-icon>
-					<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-						<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-						<path d="M0 0h24v24H0z" fill="none"/>
-					</svg>
-				</md-icon>
-			</md-button>
 		</div>
 	</md-toolbar>
 	
@@ -49,12 +40,12 @@
 		
 		<md-input-container>
 			<label>First Name</label>
-			<input ng-model="player.firstName" required>
+			<input ng-model="player.firstName">
 		</md-input-container>
 		
 		<md-input-container>
 			<label>Last Name</label>
-			<input ng-model="player.lastName" required>
+			<input ng-model="player.lastName">
 		</md-input-container>
 		
 		<md-input-container>
@@ -64,7 +55,7 @@
 		
 		<md-input-container>
 			<label>Age</label>
-			<input ng-model="player.age" required></input>
+			<input ng-model="player.age"></input>
 		</md-input-container>
 		
 		<md-input-container>
