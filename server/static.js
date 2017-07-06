@@ -81,7 +81,7 @@ module.exports = function (app) {
 	});
 	
 	app.get("/test", function(request, response) {
-		response.send("version: 1");
+		response.send("version: 2");
 	});
 	
 	app.get("*", function (request, response) {
