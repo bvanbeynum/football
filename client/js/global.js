@@ -6,7 +6,8 @@ var recApp = angular.module("recApp", ["ngMaterial", "ngMessages", "ngRoute"]);
 recApp.config(function ($mdThemingProvider, $routeProvider) {
 	$mdThemingProvider.theme("default")
 		.primaryPalette("teal")
-		.accentPalette("blue");
+		.accentPalette("blue")
+		.dark();
 	
 	$routeProvider
 		.when("/gameplay", {
