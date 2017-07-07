@@ -3,6 +3,9 @@
 	font-size: 1.7em;
 	margin-top: 20px;
 }
+.selectGame {
+	cursor: pointer;
+}
 </style>
 
 <md-toolbar>
@@ -42,7 +45,7 @@
 	</div>
 	
 	<md-card ng-repeat="game in games" ng-show="!isLoading">
-		<md-card-header>
+		<md-card-header  ng-click="loadGame(game)" class="selectGame">
 			<md-card-header-text>
 				<span class="md-caption">{{game.age}}</span>
 			</md-card-header-text>
@@ -50,7 +53,7 @@
 		
 		<md-divider></md-divider>
 		
-		<md-card-content class="md-padding" layout="row" layout-align="space-around" ng-click="loadGame(game)">
+		<md-card-content class="md-padding selectGame" layout="row" layout-align="space-around" ng-click="loadGame(game)">
 			<div layout="column" layout-align="center center">
 				<div class="listIcon" md-colors="{background: game.teamAway.color}" layout="column" layout-align="center center">
 					<div class="listLetter">{{game.teamAway.letter}}</div>
