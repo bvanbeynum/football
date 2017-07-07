@@ -12,7 +12,8 @@ module.exports = {
 		division: String,
 		year: Number,
 		season: String,
-		color: String
+		color: String,
+		user: String
 	}),
 	
 	player: mongoose.model("player", {
@@ -27,7 +28,8 @@ module.exports = {
 		previousTeams: [{
 			id: String,
 			name: String
-		}]
+		}],
+		user: String
 	}),
 	
 	game: mongoose.model("game", {
@@ -48,7 +50,8 @@ module.exports = {
 			name: String,
 			time: Date,
 			value: Number
-		}]
+		}],
+		user: String
 	}),
 	
 	user: mongoose.model("user", {

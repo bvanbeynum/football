@@ -1,13 +1,12 @@
 /* global angular */
 
 var log = {};
-var recApp = angular.module("recApp", ["ngMaterial", "ngMessages", "ngRoute"]);
+var recApp = angular.module("recApp", ["ngMaterial", "ngMessages", "ngRoute", "ngCookies"]);
 
 recApp.config(function ($mdThemingProvider, $routeProvider) {
 	$mdThemingProvider.theme("default")
 		.primaryPalette("teal")
-		.accentPalette("blue")
-		.dark();
+		.accentPalette("blue");
 	
 	$routeProvider
 		.when("/gameplay", {
@@ -89,7 +88,7 @@ recApp.controller("recCtl", function ($scope, $rootScope, $location, $mdSidenav)
 	};
 });
 
-recApp.controller("homeCtl", function($scope, $http, $location, $rootScope) {
+recApp.controller("homeCtl", function($scope, $http, $location, $rootScope, $cookies) {
 	log.scope.home = $scope;
 	
 	$rootScope.currentGame = null;
@@ -99,7 +98,10 @@ recApp.controller("homeCtl", function($scope, $http, $location, $rootScope) {
 		
 		$http({
 			method: "GET",
-			url: "/app/home/load"
+			url: "/app/home/load",
+			headers: {
+				"Authorization": "Basic " + $cookies.get("session")
+			}
 		})
 		.then(function (response) {
 			$scope.games = response.data.games
@@ -157,7 +159,10 @@ recApp.controller("homeCtl", function($scope, $http, $location, $rootScope) {
 		
 		$http({
 			method: "DELETE",
-			url: "/app/home/game?gameId=" + game.id
+			url: "/app/home/game?gameId=" + game.id,
+			headers: {
+				"Authorization": "Basic " + $cookies.get("session")
+			}
 		})
 		.then(response => {
 			$scope.load();
@@ -171,7 +176,7 @@ recApp.controller("homeCtl", function($scope, $http, $location, $rootScope) {
 	$scope.load();
 });
 
-recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $rootScope) {
+recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $rootScope, $cookies) {
 	log.scope.gamePlay = $scope;
 	
 	var updateGame = function () {
@@ -203,7 +208,10 @@ recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $roo
 		
 		$http({
 			method: "GET",
-			url: "/app/gameplay/load?gameId=" + $scope.game.id
+			url: "/app/gameplay/load?gameId=" + $scope.game.id,
+			headers: {
+				"Authorization": "Basic " + $cookies.get("session")
+			}
 		})
 		.then(function (response) {
 			
@@ -407,14 +415,16 @@ recApp.controller("teamListCtl", function ($scope, $rootScope, $mdDialog, $http)
 	};
 });
 
-recApp.controller("playerListCtl", function ($scope, $rootScope, $mdDialog, $http) {
+recApp.controller("playerListCtl", function ($scope, $rootScope, $mdDialog, $http, $cookies) {
 	log.scope.playerlist = $scope;
 	
 	var load = function () {
 		$http({
 			method: "GET",
 			url: "/app/playerlist/load",
-			headers: { Accept: "application/json" }
+			headers: {
+				"Authorization": "Basic " + $cookies.get("session")
+			}
 		})
 		.then(function (response) {
 			$scope.players = response.data.players.map(function (player) {

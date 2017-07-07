@@ -3,7 +3,7 @@ var data = require("./datamodels");
 module.exports = function (app) {
 	
 	app.get("/api/teamlist", function (request, response) {
-		var filter = {};
+		var filter = { user: request.token.id };
 		if (request.query.filter) {
 			switch (request.query.filter) {
 			case "current":
@@ -20,6 +20,7 @@ module.exports = function (app) {
 				}
 				
 				filter = { 
+					user: request.token.id,
 					year: (new Date()).getFullYear(),
 					//season: season
 				};
@@ -100,6 +101,7 @@ module.exports = function (app) {
 					}
 					
 					return new data.team({
+						user: request.token.id,
 						name: team.name,
 						coach: team.coach,
 						division: team.division.toUpperCase(),
@@ -144,7 +146,7 @@ module.exports = function (app) {
 	
 		
 	app.get("/api/playerlist", function (request, response) {
-		data.player.find()
+		data.player.find({ user: request.token.id })
 			.exec()
 			.then(function (playersDb) {
 				var players = players.map(function (player) {

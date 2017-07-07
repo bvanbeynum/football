@@ -8,6 +8,7 @@ var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 var config = require("./server/config");
+var authenticate = require("./server/authenticate");
 
 // Config =======================================================================
 
@@ -23,6 +24,8 @@ else {
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/app/*", authenticate);
+app.use("/api/*", authenticate);
 
 app.set("x-powered-by", false);
 app.set("root", __dirname);

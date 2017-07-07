@@ -6,7 +6,7 @@ module.exports = function (app) {
 		var output = {};
 		
 		data.game
-			.find()
+			.find({user: request.token.id})
 			.exec()
 			.then(gamesDb => {
 				output.games = gamesDb.map(gameDb => ({
@@ -95,6 +95,7 @@ module.exports = function (app) {
 				
 				return data.team
 					.find({
+						user: request.token.id,
 						year: year,
 						season: season
 					})
@@ -124,6 +125,7 @@ module.exports = function (app) {
 		
 		// New Game
 		new data.game({
+				user: request.token.id,
 				division: gameSave.division,
 				created: new Date(),
 				teamHome: { 
@@ -223,7 +225,7 @@ module.exports = function (app) {
 		var output = {};
 		
 		data.player
-			.find()
+			.find({user: request.token.id})
 			.exec()
 			.then(function (playersDb) {
 				var teamIds = [];
@@ -288,7 +290,11 @@ module.exports = function (app) {
 		}
 		
 		data.team
-			.find({ season: season, year: currentDate.getFullYear() })
+			.find({ 
+				user:request.token.id, 
+				season: season, 
+				year: currentDate.getFullYear()
+			})
 			.exec()
 			.then(function (teamsDb) {
 				var output = {};
@@ -354,6 +360,7 @@ module.exports = function (app) {
 			// Add
 			
 			new data.player({
+					user: request.token.id,
 					firstName: playerSave.firstName,
 					lastName: playerSave.lastName,
 					number: playerSave.number,
@@ -371,7 +378,7 @@ module.exports = function (app) {
 		var output = {};
 		
 		data.team
-			.find()
+			.find({ user: request.token.id })
 			.exec()
 			.then(function (teamsDb) {
 				output.years = teamsDb

@@ -1,4 +1,4 @@
-function gameSetupCtl($scope, $http, $mdDialog) {
+function gameSetupCtl($scope, $http, $mdDialog, $cookies) {
 	log.scope.setup = $scope;
 	
 	var loadData = function () {
@@ -6,7 +6,10 @@ function gameSetupCtl($scope, $http, $mdDialog) {
 		
 		$http({
 			method: "GET",
-			url: "/app/gamesetup/load"
+			url: "/app/gamesetup/load",
+			headers: {
+				"Authorization": "Basic " + $cookies.get("session")
+			}
 		})
 		.then(function (response) {
 			$scope.divisions = response.data.divisions;
@@ -89,7 +92,10 @@ function gameSetupCtl($scope, $http, $mdDialog) {
 		$http({
 			method: "POST",
 			url: "/app/gamesetup/save",
-			headers: { "Content-Type": "application/json" },
+			headers: { 
+				"Authorization": "Basic " + $cookies.get("session"),
+				"Content-Type": "application/json"
+			},
 			data: { game: $scope.game }
 		})
 		.then(response => {
@@ -104,7 +110,7 @@ function gameSetupCtl($scope, $http, $mdDialog) {
 	};
 }
 
-function teamEditCtl(team, $scope, $rootScope, $http, $mdDialog) {
+function teamEditCtl(team, $scope, $rootScope, $http, $mdDialog, $cookies) {
 	$scope.team = team;
 	
 	if ($scope.team.id) {
@@ -140,7 +146,10 @@ function teamEditCtl(team, $scope, $rootScope, $http, $mdDialog) {
 		$http({
 			method: "POST",
 			url: "/api/teamsave",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Authorization": "Basic " + $cookies.get("session"),
+				"Content-Type": "application/json"
+			},
 			data: { team: team }
 		}).then(function (response) {
 			$mdDialog.hide("refresh");
@@ -157,7 +166,10 @@ function teamEditCtl(team, $scope, $rootScope, $http, $mdDialog) {
 			
 			$http({
 				method: "DELETE",
-				url: "/api/teamdelete?teamId=" + team.id
+				url: "/api/teamdelete?teamId=" + team.id,
+				headers: {
+					"Authorization": "Basic " + $cookies.get("session")
+				}
 			})
 			.then(function (response) {
 				$mdDialog.hide("refresh");
@@ -179,7 +191,7 @@ function teamEditCtl(team, $scope, $rootScope, $http, $mdDialog) {
 	};
 }
 
-function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog) {
+function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog, $cookies) {
 	$scope.player = player;
 	$scope.isLoading = true;
 	
@@ -193,7 +205,13 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog) {
 	$scope.maxDate = new Date();
 	$scope.teams = [];
 	
-	$http({ method: "GET", url: "/app/playeredit/load"})
+	$http({ 
+		method: "GET", 
+		url: "/app/playeredit/load",
+		headers: {
+			"Authorization": "Basic " + $cookies.get("session")
+		}
+		})
 		.then(function (response) {
 			$scope.teams = response.data.teams
 				.sort(function (prev, curr) {
@@ -232,7 +250,10 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog) {
 		$http({
 			method: "POST",
 			url: "/app/playeredit/save",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Authorization": "Basic " + $cookies.get("session"),
+				"Content-Type": "application/json"
+			},
 			data: { player: playerSave }
 		}).then(function (response) {
 			$mdDialog.hide();
@@ -249,14 +270,17 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog) {
 	};
 }
 
-function playerFilterCtl($scope, filters, $mdDialog, $http) {
+function playerFilterCtl($scope, filters, $mdDialog, $http, $cookies) {
 	$scope.isLoading = true;
 	$scope.filters = filters || {};
 	$scope.allTeams = [];
 	
 	$http({
 		method: "GET",
-		url: "/app/playerfilter/load"
+		url: "/app/playerfilter/load",
+		headers: {
+			"Authorization": "Basic " + $cookies.get("session")
+		}
 	})
 	.then(function (response) {
 		$scope.yearOptions = response.data.years;
@@ -304,7 +328,7 @@ function playerFilterCtl($scope, filters, $mdDialog, $http) {
 	};
 }
 
-function gamestatCtl($scope, gameId, player, $mdDialog, $http) {
+function gamestatCtl($scope, gameId, player, $mdDialog, $http, $cookies) {
 	log.scope.stat = $scope;
 	$scope.player = player;
 	
@@ -351,7 +375,10 @@ function gamestatCtl($scope, gameId, player, $mdDialog, $http) {
 		$http({
 			method: "POST",
 			url: "/app/gamestat/save",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Authorization": "Basic " + $cookies.get("session"),
+				"Content-Type": "application/json"
+			},
 			data: { gameId: gameId, stats: returnStats }
 		});
 		
