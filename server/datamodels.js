@@ -8,7 +8,6 @@ module.exports = {
 	
 	team: mongoose.model("team", {
 		name: String,
-		coach: String,
 		division: String,
 		year: Number,
 		season: String,
@@ -20,15 +19,10 @@ module.exports = {
 		firstName: String,
 		lastName: String,
 		number: Number,
-		age: Number,
 		team: {
 			id: String,
 			name: String
 		},
-		previousTeams: [{
-			id: String,
-			name: String
-		}],
 		user: String
 	}),
 	

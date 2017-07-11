@@ -32,8 +32,9 @@
 				<md-input-container>
 					<label>Team</label>
 					
-					<md-select ng-model="game.teamHome" ng-disabled="game.division == undefined"  required>
+					<md-select ng-model="game.teamHome" ng-change="changeTeam(game.teamHome)" ng-disabled="game.division == undefined"  required>
 						<md-option ng-repeat="team in selectTeams" ng-value="team" ng-selected="team.id == game.teamHome.id">{{team.name}}</md-option>
+						<md-option>Add Team</md-option>
 					</md-select>
 				</md-input-container>
 			</md-list-item>
@@ -44,8 +45,9 @@
 				<md-input-container>
 					<label>Team</label>
 					
-					<md-select ng-model="game.teamAway" ng-disabled="game.division == undefined" required>
+					<md-select ng-model="game.teamAway" ng-change="changeTeam(game.teamAway)" ng-disabled="game.division == undefined" required>
 						<md-option ng-repeat="team in selectTeams" ng-value="team" ng-selected="team.id == game.teamAway.id">{{team.name}}</md-option>
+						<md-option>Add Team</md-option>
 					</md-select>
 				</md-input-container>
 			</md-list-item>
@@ -56,7 +58,6 @@
 	
 	<md-dialog-actions>
 		
-		<md-button ng-click="addTeam()" class="md-primary">Add Team</md-button>
 		<md-button ng-click="cancel()" class="md-primary">Cancel</md-button>
 		<md-button ng-click="ok()" class="md-primary" ng-disabled="isLoading || game.division == undefined || game.teamHome == undefined || game.teamAway == undefined">
 			Start Game

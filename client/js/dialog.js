@@ -1,7 +1,7 @@
 function gameSetupCtl($scope, $http, $mdDialog, $cookies) {
 	log.scope.setup = $scope;
 	
-	var loadData = function () {
+	var loadData = function (teamId) {
 		$scope.isLoading = true;
 		
 		$http({
@@ -48,34 +48,37 @@ function gameSetupCtl($scope, $http, $mdDialog, $cookies) {
 	
 	loadData();
 	
-	$scope.addTeam = function () {
-		
-		var team = {
-			year: $scope.game.year,
-			season: $scope.game.season,
-			division: $scope.game.division
-		};
-		
-		$mdDialog.show({
-			templateUrl: "/view/dialog/teamedit.html",
-			controller: teamEditCtl,
-			locals: { team: team },
-			clickOutsideToClose: true,
-			escapeToClose: true,
-			fullscreen: true,
-			skipHide: true,
-			openFrom: {
-				top: document.documentElement.clientHeight,
-				left: 0
-			},
-			closeTo:{
-				top: document.documentElement.clientHeight,
-				left: 0
-			}
-		})
-		.then(function () {
-			loadData();
-		});
+	$scope.changeTeam = function (team) {
+		if (team == "Add Team") {
+			team = null;
+			
+			var newTeam = {
+				year: $scope.game.year,
+				season: $scope.game.season,
+				division: $scope.game.division
+			};
+			
+			$mdDialog.show({
+				templateUrl: "/view/dialog/teamadd.html",
+				controller: teamAddCtl,
+				locals: { team: newTeam },
+				clickOutsideToClose: true,
+				escapeToClose: true,
+				fullscreen: true,
+				skipHide: true,
+				openFrom: {
+					top: document.documentElement.clientHeight,
+					left: 0
+				},
+				closeTo:{
+					top: document.documentElement.clientHeight,
+					left: 0
+				}
+			})
+			.then(function (teamId) {
+				loadData(teamId);
+			});
+		}
 	};
 	
 	$scope.updateTeams = function () {
@@ -110,104 +113,53 @@ function gameSetupCtl($scope, $http, $mdDialog, $cookies) {
 	};
 }
 
-function teamEditCtl(team, $scope, $rootScope, $http, $mdDialog, $cookies) {
+function teamAddCtl(team, $scope, $rootScope, $http, $mdDialog, $cookies) {
 	$scope.team = team;
-	
-	if ($scope.team.id) {
-		$scope.header = "Edit " + $scope.team.name;
-	}
-	else {
-		$scope.header = "Add Team";
-	}
-	
-	$scope.yearOptions = [];
-	for (var index = 0; index < 4; index++) {
-		$scope.yearOptions.push((new Date()).getFullYear() - index);
-	}
-	
-	$scope.divisionOptions = ["6U", "8U", "10U", "13U"];
-	$scope.seasonOptions = ["Spring", "Summer", "Fall"];
 	$scope.colorOptions = $rootScope.materialColors;
 	
 	$scope.save = function () {
-		if	(
-			!team.name || !team.name.length > 0
-			|| !team.division
-			|| !team.year
-			|| !team.season
-			|| !team.color
-			) {
-				$scope.errorMessage = "Required fields missing";
-				return;
+		if	(!team.name || !team.name.length > 0 || !team.color) {
+			$scope.errorMessage = "Required fields missing";
+			return;
 		}
 		
 		$scope.isLoading = true;
 		
 		$http({
 			method: "POST",
-			url: "/api/teamsave",
+			url: "/app/teamsave",
 			headers: {
 				"Authorization": "Basic " + $cookies.get("session"),
 				"Content-Type": "application/json"
 			},
 			data: { team: team }
-		}).then(function (response) {
-			$mdDialog.hide("refresh");
-		}, function (response) {
+		})
+		.then(function (response) {
+			$mdDialog.hide(response.data.teamId );
+		}, 
+		function (response) {
 			console.log(response);
 			$scope.errorMessage = "Error saving team";
 			$scope.isLoading = false;
 		});
 	};
 	
-	$scope.delete = function () {
-		if (team.id) {
-			$scope.isLoading = true;
-			
-			$http({
-				method: "DELETE",
-				url: "/api/teamdelete?teamId=" + team.id,
-				headers: {
-					"Authorization": "Basic " + $cookies.get("session")
-				}
-			})
-			.then(function (response) {
-				$mdDialog.hide("refresh");
-			}, function (response) {
-				console.log(response);
-				$scope.errorMessage = "Error deleting team";
-				$scope.isLoading = false;
-			});
-		}
-	};
-	
 	$scope.close = function () {
-		$mdDialog.cancel();
-	};
-	
-	$scope.viewPlayers = function () {
-		$rootScope.navigate("/players");
 		$mdDialog.cancel();
 	};
 }
 
-function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog, $cookies) {
+function playerAddCtl(player, $scope, $rootScope, $http, $mdDialog, $cookies) {
+	log.scope.player = $scope;
 	$scope.player = player;
 	$scope.isLoading = true;
-	
-	if ($scope.player.id) {
-		$scope.header = "Edit #" + $scope.player.number + " " + $scope.player.firstName + " " + $scope.player.lastName;
-	}
-	else {
-		$scope.header = "Add Player";
-	}
-	
+
 	$scope.maxDate = new Date();
 	$scope.teams = [];
 	
 	$http({ 
 		method: "GET", 
-		url: "/app/playeredit/load",
+		url: "/app/playeradd/load",
 		headers: {
 			"Authorization": "Basic " + $cookies.get("session")
 		}
@@ -232,7 +184,7 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog, $cookies) 
 		});
 	
 	$scope.save = function () {
-		if	(!player.number || !player.team || !player.team.id) {
+		if	(!player.number) {
 			$scope.errorMessage = "Required fields missing";
 			return;
 		}
@@ -243,21 +195,22 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog, $cookies) 
 			firstName: player.firstName,
 			lastName: player.lastName,
 			number: player.number,
-			age: player.age,
 			team: (player.team) ? {id: player.team.id, name: player.team.name } : null
 		};
 		
 		$http({
 			method: "POST",
-			url: "/app/playeredit/save",
+			url: "/app/playeradd/save",
 			headers: {
 				"Authorization": "Basic " + $cookies.get("session"),
 				"Content-Type": "application/json"
 			},
 			data: { player: playerSave }
-		}).then(function (response) {
+		})
+		.then(function (response) {
 			$mdDialog.hide();
-		}, function (response) {
+		}, 
+		function (response) {
 			console.log(response);
 			$scope.errorMessage = "Error saving player";
 			
@@ -266,64 +219,6 @@ function playerEditlCtl(player, $scope, $rootScope, $http, $mdDialog, $cookies) 
 	};
 	
 	$scope.close = function () {
-		$mdDialog.cancel();
-	};
-}
-
-function playerFilterCtl($scope, filters, $mdDialog, $http, $cookies) {
-	$scope.isLoading = true;
-	$scope.filters = filters || {};
-	$scope.allTeams = [];
-	
-	$http({
-		method: "GET",
-		url: "/app/playerfilter/load",
-		headers: {
-			"Authorization": "Basic " + $cookies.get("session")
-		}
-	})
-	.then(function (response) {
-		$scope.yearOptions = response.data.years;
-		$scope.seasonOptions = response.data.seasons;
-		$scope.divisionOptions = response.data.divisions;
-		$scope.allTeams = response.data.teams;
-		$scope.teamOptions = [];
-		
-		$scope.updateFilter();
-		
-		$scope.isLoading = false;
-	}, function (response) {
-		$scope.errorMessage = "Error loading from server";
-		$scope.isLoading = false;
-	});
-	
-	// Fired for divisions, years & seasons
-	$scope.updateFilter = function () {
-		var selectedTeamId = $scope.filters.team ? $scope.filters.team.id : null;
-		
-		if ($scope.filters.year && $scope.filters.season && $scope.filters.division) {
-			
-			// Now that we have limited the options for team, only show those teams as options
-			$scope.teamOptions = $scope.allTeams.filter(team =>
-				team.year == $scope.filters.year
-				&& team.season == $scope.filters.season
-				&& team.division == $scope.filters.division
-			);
-			
-			// If the selected team is in the list then re-select it
-			$scope.filters.team = $scope.teamOptions.find(team => team.id == selectedTeamId);
-		}
-	};
-	
-	$scope.ok = function () {
-		$mdDialog.hide($scope.filters);
-	};
-	
-	$scope.clear = function () {
-		$mdDialog.hide({});
-	};
-	
-	$scope.cancel = function () {
 		$mdDialog.cancel();
 	};
 }

@@ -25,14 +25,12 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/app/*", authenticate);
-app.use("/api/*", authenticate);
 
 app.set("x-powered-by", false);
 app.set("root", __dirname);
 
 // Routes =======================================================================
 
-require("./server/api")(app);
 require("./server/app")(app);
 require("./server/static")(app);
 

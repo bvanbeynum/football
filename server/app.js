@@ -75,17 +75,7 @@ module.exports = function (app) {
 	});
 	
 	app.get("/app/gamesetup/load", function(request, response) {
-		var output = {}, season, currentDate = new Date(), year = currentDate.getFullYear();
-		
-		if (currentDate.getMonth() < 5) {
-			season = new RegExp("^spring$", "i");
-		}
-		else if (currentDate.getMonth() < 7) {
-			season = new RegExp("^summer$", "i");
-		}
-		else {
-			season = new RegExp("^fall$", "i");
-		}
+		var output = {};
 		
 		data.division
 			.find()
@@ -94,11 +84,7 @@ module.exports = function (app) {
 				output.divisions = divisionsDb.map(divisionDb => divisionDb.name);
 				
 				return data.team
-					.find({
-						user: request.token.id,
-						year: year,
-						season: season
-					})
+					.find({ user: request.token.id })
 					.exec();
 			})
 			.then(teamsDb => {
@@ -220,80 +206,12 @@ module.exports = function (app) {
 				response.status(500).send(error.message);
 			});
 	});
-	
-	app.get("/app/playerlist/load", function(request, response) {
-		var output = {};
-		
-		data.player
-			.find({user: request.token.id})
-			.exec()
-			.then(function (playersDb) {
-				var teamIds = [];
-				
-				output.players = playersDb.map(function (playerDb) {
-					if (playerDb.team) {
-						teamIds.push(playerDb.team.id);
-					}
-					
-					return {
-						id: playerDb._id,
-						firstName: playerDb.firstName,
-						lastName: playerDb.lastName,
-						age: playerDb.age,
-						number: playerDb.number,
-						team: { id: playerDb.team.id, name: playerDb.team.name }
-					};
-				});
-				
-				return data.team.find({ _id: { $in: teamIds } })
-					.exec();
-			})
-			.then(function (teamsDb) {
-				var team;
-				
-				output.players
-					.forEach(function (player) {
-						team = teamsDb.find(function (teamDb) { 
-							return teamDb._id == player.team.id; 
-						});
-						
-						if (team) {
-							player.team = {
-								id: team._id,
-								name: team.name,
-								year: team.year,
-								season: team.season,
-								division: team.division,
-								color: team.color
-							};
-						}
-					});
-				
-				response.status(200).json(output);
-			})
-			.catch(function (error) {
-				response.status(500).send(error.message);
-			});
-	});
-	
-	app.get("/app/playeredit/load", function (request, response) {
-		var season, currentDate = new Date();
-		
-		if (currentDate.getMonth() < 5) {
-			season = new RegExp("^spring$", "i");
-		}
-		else if (currentDate.getMonth() < 7) {
-			season = new RegExp("^summer$", "i");
-		}
-		else {
-			season = new RegExp("^fall$", "i");
-		}
-		
+
+	app.get("/app/playeradd/load", function (request, response) {
 		data.team
 			.find({ 
-				user:request.token.id, 
-				season: season, 
-				year: currentDate.getFullYear()
+				user:request.token.id,
+				division: request.query.divisions
 			})
 			.exec()
 			.then(function (teamsDb) {
@@ -302,7 +220,6 @@ module.exports = function (app) {
 				output.teams = teamsDb.map(function (teamDb) {
 					return {
 						id: teamDb._id,
-						division: teamDb.division,
 						name: teamDb.name,
 						color: teamDb.color
 					};
@@ -315,7 +232,44 @@ module.exports = function (app) {
 			});
 	});
 	
-	app.post("/app/playeredit/save", function (request, response) {
+	app.post("/app/teamsave", function (request, response) {
+		if (!request.body.team || !request.body.team.name || !request.body.team.season || !request.body.team.year || !request.body.team.division) {
+			response.status(500).send("Invalid team save request");
+			return;
+		}
+		
+		var team = request.body.team;
+
+		data.team
+			.findOne({
+				name: new RegExp("^" + team.name + "$", "i"),
+				division: new RegExp("^" + team.division + "$", "i"),
+			})
+			.exec()
+			.then(function (error, teamFind) {
+				if (teamFind) {
+					// Team already exists
+					response.status(200).json({ teamId: teamFind._id });
+					return;
+				}
+				
+				return new data.team({
+					user: request.token.id,
+					name: team.name,
+					division: team.division.toUpperCase(),
+					color: team.color
+				})
+				.save();
+			})
+			.then(function (teamDb) {
+				response.status(200).json({ teamId: teamDb._id });
+			})
+			.catch(function (error) {
+				response.status(500).send(error);
+			});
+	});
+	
+	app.post("/app/playeradd/save", function (request, response) {
 		if (!request.body.player || !request.body.player.number) {
 			response.status(500).send("Invalid player save request");
 			return;
@@ -323,90 +277,17 @@ module.exports = function (app) {
 		
 		var playerSave = request.body.player;
 		
-		if (playerSave.id) {
-			// Update
-			
-			data.player.findById(playerSave.id)
-				.exec()
-				.then(function (playerDb) {
-					if (!playerDb) {
-						response.status(404).send("Could not find requested player");
-						return;
-					}
-					
-					playerDb.firstName = playerSave.firstName;
-					playerDb.lastName = playerSave.lastName;
-					playerDb.number = playerSave.number;
-					playerDb.age = playerSave.age;
-					
-					data.team.findById(playerSave.team.id)
-						.exec()
-						.then((teamDb) => {
-							if (teamDb.length > 0) {
-								playerDb.team = { id: teamDb._id, name: teamDb.name };
-							}
-							
-							return playerDb.save();
-						})
-						.then(() => { response.status(200).send("ok"); })
-						.catch((error) => { response.status(500).send(error.message); });
-					
-				})
-				.catch(function (error) {
-					response.status(500).send(error.message);
-				});
-		}
-		else {
-			// Add
-			
-			new data.player({
-					user: request.token.id,
-					firstName: playerSave.firstName,
-					lastName: playerSave.lastName,
-					number: playerSave.number,
-					age: playerSave.age,
-					team: playerSave.team ? { id: playerSave.team.id, name: playerSave.team.name } : null
-				})
-				.save()
-				.then(() => { response.status(200).send("ok"); })
-				.catch((error) => { response.status(500).send(error.message); });
-			
-		}
-	});
-	
-	app.get("/app/playerfilter/load", function(request, response) {
-		var output = {};
-		
-		data.team
-			.find({ user: request.token.id })
-			.exec()
-			.then(function (teamsDb) {
-				output.years = teamsDb
-					.map(team => team.year)
-					.filter((year, index, array) => array.indexOf(year) === index);
-				
-				output.seasons = teamsDb
-					.map(team => team.season)
-					.filter((season, index, array) => array.indexOf(season) === index);
-				
-				output.divisions = teamsDb
-					.map(team => team.division)
-					.filter((division, index, array) => array.indexOf(division) === index);
-				
-				output.teams = teamsDb
-					.map(teamDb => ({
-						id: teamDb._id,
-						year: teamDb.year,
-						name: teamDb.name,
-						division: teamDb.division,
-						season: teamDb.season
-					}));
-				
-				response.status(200).json(output);
+		new data.player({
+				user: request.token.id,
+				firstName: playerSave.firstName,
+				lastName: playerSave.lastName,
+				number: playerSave.number,
+				team: playerSave.team ? { id: playerSave.team.id, name: playerSave.team.name } : null
 			})
-			.catch(function (error) {
-				response.status(500).send(error.message);
-			});
+			.save()
+			.then(() => { response.status(200).send("ok"); })
+			.catch((error) => { response.status(500).send(error.message); });
+
 	});
 	
 };

@@ -10,7 +10,7 @@
 				</md-icon>
 			</md-button>
 			
-			<h2 flex="grow">Player Edit</h2>
+			<h2 flex="grow">Add Player</h2>
 			
 			<md-button class="md-icon-button" aria-label="Save" ng-click="save()" ng-disabled="isLoading">
 				<md-icon>
@@ -32,11 +32,14 @@
 	
 	<div layout="column" class="md-padding" ng-show="!isLoading">
 		
-		<h3>{{header}}</h3>
-		
 		<div class="panelError" ng-show="errorMessage && errorMessage.length > 0">
 			{{errorMessage}}
 		</div>
+		
+		<md-input-container>
+			<label>Number</label>
+			<input ng-model="player.number" type="number" required>
+		</md-input-container>
 		
 		<md-input-container>
 			<label>First Name</label>
@@ -46,23 +49,6 @@
 		<md-input-container>
 			<label>Last Name</label>
 			<input ng-model="player.lastName">
-		</md-input-container>
-		
-		<md-input-container>
-			<label>Number</label>
-			<input ng-model="player.number" type="number" required>
-		</md-input-container>
-		
-		<md-input-container>
-			<label>Age</label>
-			<input ng-model="player.age"></input>
-		</md-input-container>
-		
-		<md-input-container>
-			<label>Team</label>
-			<md-select ng-model="player.team" required>
-				<md-option ng-repeat="team in teams" ng-value="team" ng-selected="player.team.id == team.id">{{team.division}} - {{team.name}}</md-option>
-			</md-select>
 		</md-input-container>
 		
 	</div>

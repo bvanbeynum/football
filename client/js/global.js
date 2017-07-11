@@ -225,10 +225,10 @@ recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $roo
 			$scope.game.teamAway.score = $scope.game.teamAway.score || 0;
 			
 			$scope.game.players.forEach(function (player) {
-				player.displayName = player.firstName + " " + player.lastName.charAt(0).toUpperCase() + ".";
+				player.displayName = (player.firstName ? player.firstName : "") + (player.lastName ? " " + player.lastName.charAt(0).toUpperCase() + "." : "");
 			});
 			
-			$scope.selectTeam("home");
+			$scope.selectTeam($scope.selectedTeam || "home");
 			updateGame();
 			$scope.isLoading = false;
 			
@@ -273,11 +273,12 @@ recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $roo
 	
 	$scope.addPlayer = function () {
 		var player = {
+			team: $scope.selectedTeam == "home" ? $scope.game.teamHome : $scope.game.teamAway
 		};
 		
 		$mdDialog.show({
-			templateUrl: "/view/dialog/playeredit.html",
-			controller: playerEditlCtl,
+			templateUrl: "/view/dialog/playeradd.html",
+			controller: playerAddCtl,
 			locals: { player: player },
 			clickOutsideToClose: true,
 			escapeToClose: true,
@@ -328,197 +329,6 @@ recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $roo
 			$scope.playerDisplay = $scope.game.players
 				.filter(function (player) { return player.teamId == $scope.game.teamAway.id; });
 		}
-	};
-	
-});
-
-recApp.controller("teamListCtl", function ($scope, $rootScope, $mdDialog, $http) {
-	log.scope.team = $scope;
-	$scope.isLoading = true;
-	
-	var loadTeams = function () {
-		$http({
-			method: "GET",
-			url: "/api/teamlist",
-			headers: { Accept: "application/json" }
-		})
-		.then(function (response) {
-			$scope.teams = response.data.map(function (team) {
-				return {
-					id: team.id,
-					name: team.name,
-					coach: team.coach,
-					year: team.year,
-					division: team.division ? team.division.toUpperCase() : "",
-					season: team.season ? team.season.substring(0,1).toUpperCase() + team.season.substring(1) : "",
-					letter: team.name.substring(0,1).toUpperCase(),
-					color: team.color
-				};
-			})
-			.sort(function (prev, curr) {
-				if (prev.year != curr.year) {
-					return curr.year - prev.year;
-				}
-				else if (prev.division != curr.division) {
-					return prev.division < curr.division ? -1 : 1;
-				}
-				else {
-					return prev.name < curr.name ? -1 : 1;
-				}
-			});
-			
-			$scope.isLoading = false;
-		}, function (response) {
-			console.log(response);
-			$scope.error = response;
-			
-			$scope.isLoading = false;
-		});
-	};
-	
-	var showDialog = function (team) {
-		$mdDialog.show({
-			templateUrl: "/view/dialog/teamedit.html",
-			controller: teamEditCtl,
-			locals: { team: team },
-			clickOutsideToClose: true,
-			escapeToClose: true,
-			fullscreen: true,
-			openFrom: {
-				top: document.documentElement.clientHeight,
-				left: 0
-			},
-			closeTo:{
-				top: document.documentElement.clientHeight,
-				left: 0
-			}
-		})
-		.then(function () {
-			// Update
-			$scope.isLoading = true;
-			loadTeams();
-		});
-	};
-	
-	loadTeams();
-	
-	$scope.addTeam = function () {
-		var newTeam = {
-			year: (new Date()).getFullYear()
-		};
-		
-		showDialog(newTeam);
-	};
-	
-	$scope.editTeam = function (team) {
-		showDialog(team);
-	};
-});
-
-recApp.controller("playerListCtl", function ($scope, $rootScope, $mdDialog, $http, $cookies) {
-	log.scope.playerlist = $scope;
-	
-	var load = function () {
-		$http({
-			method: "GET",
-			url: "/app/playerlist/load",
-			headers: {
-				"Authorization": "Basic " + $cookies.get("session")
-			}
-		})
-		.then(function (response) {
-			$scope.players = response.data.players.map(function (player) {
-				return {
-					id: player.id,
-					firstName: player.firstName,
-					lastName: player.lastName,
-					number: player.number,
-					age: player.age,
-					team: player.team,
-					color: player.team ? player.team.color : "brown"
-				};
-			});
-			
-			filterPlayers();
-			
-			$scope.isLoading = false;
-		}, function (response) {
-			console.log(response);
-			$scope.error = response;
-			
-			$scope.isLoading = false;
-		});
-	};
-	
-	var filterPlayers = function () {
-		$scope.playersDisplay = $scope.players
-			.filter(player => 
-				(!$scope.filters.year || (player.team && $scope.filters.year == player.team.year))
-				&& (!$scope.filters.season || (player.team && $scope.filters.season == player.team.season))
-				&& (!$scope.filters.division || (player.team && $scope.filters.division == player.team.division))
-				&& (!$scope.filters.team || (player.team && $scope.filters.team.id == player.team.id))
-			)
-			.sort((prev, curr) =>
-				prev.firstName < curr.firstName ? -1 : 1
-			);
-	};
-	
-	var showEdit = function (player) {
-		$mdDialog.show({
-			templateUrl: "/view/dialog/playeredit.html",
-			controller: playerEditlCtl,
-			locals: { player: player },
-			clickOutsideToClose: true,
-			escapeToClose: true,
-			fullscreen: true,
-			duration: 1000,
-			openFrom: {
-				top: document.documentElement.clientHeight,
-				left: 0
-			},
-			closeTo:{
-				top: document.documentElement.clientHeight,
-				left: 0
-			}
-		})
-		.then(function () {
-			// Update
-			$scope.isLoading = true;
-			load();
-		});
-	};
-	
-	$scope.isLoading = true;
-	$scope.filters = {};
-	load();
-	
-	$scope.addPlayer = function () {
-		showEdit({});
-	};
-	
-	$scope.editPlayer = function (playerId) {
-		showEdit($scope.players.find(function (player) { return player.id == playerId}));
-	};
-	
-	$scope.filterDialog = function () {
-		$mdDialog.show({
-			templateUrl: "/view/dialog/playerfilter.html",
-			controller: playerFilterCtl,
-			locals: { filters: $scope.filters },
-			clickOutsideToClose: true,
-			openFrom: {
-				top: document.documentElement.clientHeight,
-				left: 0
-			},
-			closeTo: {
-				top: document.documentElement.clientHeight,
-				left: 0
-			}
-		})
-		.then(function (filters) {
-			$scope.filters = filters;
-			filterPlayers();
-		});
 	};
 	
 });
