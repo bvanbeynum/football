@@ -176,8 +176,10 @@ recApp.controller("homeCtl", function($scope, $http, $location, $rootScope, $coo
 	$scope.load();
 });
 
-recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $rootScope, $cookies) {
+recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $mdMedia, $rootScope, $cookies) {
 	log.scope.gamePlay = $scope;
+	
+	$scope.$mdMedia = $mdMedia;
 	
 	var updateGame = function () {
 		$scope.game.players.forEach(function (player) {
@@ -220,15 +222,30 @@ recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $roo
 			
 			$scope.game.teamHome.letter = $scope.game.teamHome.name.charAt(0).toUpperCase();
 			$scope.game.teamHome.score = $scope.game.teamHome.score || 0;
+			$scope.game.teamHome.players = $scope.game.players
+				.filter(function (player) { return player.teamId == $scope.game.teamHome.id })
+				.map(function (player) {
+					player.displayName = (player.firstName ? player.firstName : "") + (player.lastName ? " " + player.lastName.charAt(0).toUpperCase() + "." : "");
+					
+					return player;
+				});
 			
 			$scope.game.teamAway.letter = $scope.game.teamAway.name.charAt(0).toUpperCase();
 			$scope.game.teamAway.score = $scope.game.teamAway.score || 0;
+			$scope.game.teamAway.players = $scope.game.players
+				.filter(function (player) { return player.teamId == $scope.game.teamAway.id })
+				.map(function (player) {
+					player.displayName = (player.firstName ? player.firstName : "") + (player.lastName ? " " + player.lastName.charAt(0).toUpperCase() + "." : "");
+					
+					return player;
+				});
 			
 			$scope.game.players.forEach(function (player) {
 				player.displayName = (player.firstName ? player.firstName : "") + (player.lastName ? " " + player.lastName.charAt(0).toUpperCase() + "." : "");
 			});
 			
 			$scope.selectTeam($scope.selectedTeam || "home");
+			
 			updateGame();
 			$scope.isLoading = false;
 			
@@ -271,9 +288,9 @@ recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $roo
 		});
 	}
 	
-	$scope.addPlayer = function () {
+	$scope.addPlayer = function (team) {
 		var player = {
-			team: $scope.selectedTeam == "home" ? $scope.game.teamHome : $scope.game.teamAway
+			team: team == "home" ? $scope.game.teamHome : $scope.game.teamAway
 		};
 		
 		$mdDialog.show({
@@ -282,7 +299,6 @@ recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $roo
 			locals: { player: player },
 			clickOutsideToClose: true,
 			escapeToClose: true,
-			fullscreen: true,
 			openFrom: {
 				top: document.documentElement.clientHeight,
 				left: 0
@@ -322,10 +338,14 @@ recApp.controller("gameplay", function($scope, $http, $mdDialog, $location, $roo
 		$scope.selectedTeam = team;
 		
 		if (team == "home") {
+			$scope.showHome = true;
+			$scope.showAway = false;
 			$scope.playerDisplay = $scope.game.players
 				.filter(function (player) { return player.teamId == $scope.game.teamHome.id; });
 		}
 		else {
+			$scope.showHome = false;
+			$scope.showAway = true;
 			$scope.playerDisplay = $scope.game.players
 				.filter(function (player) { return player.teamId == $scope.game.teamAway.id; });
 		}

@@ -64,7 +64,7 @@ function gameSetupCtl($scope, $http, $mdDialog, $cookies) {
 				locals: { team: newTeam },
 				clickOutsideToClose: true,
 				escapeToClose: true,
-				fullscreen: true,
+				fullscreen: false,
 				skipHide: true,
 				openFrom: {
 					top: document.documentElement.clientHeight,

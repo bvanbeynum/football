@@ -24,9 +24,6 @@ md-list-item .md-button {
 	bottom: 5%;
 	right: 5%;
 }
-.editPanel {
-	background: rgb(255,255,255);
-}
 .panelError {
 	margin: 20px 0px;
 	color: red;

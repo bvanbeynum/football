@@ -9,7 +9,7 @@
 <div layout="row" flex="grow" ng-cloak>
 
 	<md-sidenav md-component-id="left" class="md-sidenav-left" md-whiteframe="4">
-		<md-toolbar class="md-accent">
+		<md-toolbar class="md-primary">
 			<div class="md-toolbar-tools" layout="row" layout-align="end center">
 				<md-button class="md-icon-button" aria-label="Close" ng-click="closeNav()">
 					<md-icon>
@@ -23,11 +23,7 @@
 		</md-toolbar>
 		
 		<md-list>
-			<md-list-item>
-				<md-button ng-click="navigate('')">Home</md-button>
-			</md-list-item>
-			
-			<md-divider></md-divider>
+			<md-list-item ng-click="navigate('')">Home</md-list-item>
 		</md-list>
 	</md-sidenav>
 	

@@ -1,4 +1,10 @@
 <style>
+.scoreboard {
+	margin-bottom: 20px;
+	border-bottom: rgb(220,220,220) 1px solid;
+	padding: 20px 5px;
+}
+
 .score {
 	font-size: 1.7em;
 	margin-top: 20px;
@@ -34,6 +40,10 @@ table.playerTable {
 .playerTable tr:nth-child(n+2) {
 	cursor: pointer;
 }
+
+.playerTable .addPlayer {
+	text-align: center;
+}
 </style>
 
 <md-toolbar>
@@ -63,40 +73,44 @@ table.playerTable {
 		{{errorMessage}}
 	</div>
 	
-	<md-card ng-show="!isLoading" layout="column" layout-align="start stretch">
+	<md-card ng-show="!isLoading" layout="column" layout-align="center">
 		
-			<div class="md-padding" layout="row" layout-align="space-around">
-				
-				<div layout="column" layout-align="center center">
-					<div class="listIcon" ng-style="{'background-color': game.teamAway.color}" layout="column" layout-align="center center">
-						<div class="listLetter">{{game.teamAway.letter}}</div>
-					</div>
-					
-					<div class="md-margin">{{game.teamAway.name}}</div>
-					
-					<div class="md-caption">(2 - 1)</div>
+		<div class="md-padding scoreboard" layout="row" layout-align="space-around">
+			
+			<div layout="column" layout-align="center center" flex>
+				<div class="listIcon" ng-style="{'background-color': game.teamAway.color}" layout="column" layout-align="center center">
+					<div class="listLetter">{{game.teamAway.letter}}</div>
 				</div>
 				
+				<div class="md-margin">{{game.teamAway.name}}</div>
+				
+				<div class="md-caption">(2 - 1)</div>
+			</div>
+			
+			<div layout="row" layout-align="space-around" flex="25">
 				<div class="score">{{game.teamAway.score}}</div>
 				<div class="score" layout="column" layout-align="space-between">
 					<div>-</div>
 					<div class="md-caption">at</div>
 				</div>
 				<div class="score">{{game.teamHome.score}}</div>
-				
-				<div layout="column" layout-align="center center">
-					<div class="listIcon" ng-style="{'background-color': game.teamHome.color}" layout="column" layout-align="center center">
-						<div class="listLetter">{{game.teamHome.letter}}</div>
-					</div>
-					
-					<div class="md-margin">{{game.teamHome.name}}</div>
-					
-					<div class="md-caption">(3 - 0)</div>
-				</div>
-				
 			</div>
 			
-			<md-nav-bar md-selected-nav-item="selectedTeam" nav-bar-aria-label="Select Team">
+			<div layout="column" layout-align="center center" flex>
+				<div class="listIcon" ng-style="{'background-color': game.teamHome.color}" layout="column" layout-align="center center">
+					<div class="listLetter">{{game.teamHome.letter}}</div>
+				</div>
+				
+				<div class="md-margin">{{game.teamHome.name}}</div>
+				
+				<div class="md-caption">(3 - 0)</div>
+			</div>
+			
+		</div>
+		
+		<div layout="column">
+			
+			<md-nav-bar md-selected-nav-item="selectedTeam" nav-bar-aria-label="Select Team" hide-gt-xs>
 				<div layout="row" layout-align="center" flex="50">
 					<md-nav-item md-nav-click="selectTeam('away')" name="away" value="away">{{game.teamAway.name}}</md-nav-item>
 				</div>
@@ -106,30 +120,60 @@ table.playerTable {
 				</div>
 			</md-nav-bar>
 			
-			<div class="md-padding">
-				<table class="playerTable">
-				<tr>
-					<th>Player</th>
-					<th>REC</th>
-					<th>YRD</th>
-					<th>PNT</th>
-					<th>PCK</th>
-					<th>FLG</th>
-					<th>DFT</th>
-				</tr>
-				<tr ng-repeat="player in playerDisplay | orderBy: 'number'" ng-click="addStat(player)">
-					<td>{{player.number}}. {{player.displayName}}</td>
-					<td>{{player.stats.Reception || 0}}</td>
-					<td>{{player.stats.Yards || 0}}</td>
-					<td>{{player.stats.Points || 0}}</td>
-					<td>{{player.stats.Pick || 0}}</td>
-					<td>{{player.stats.Flag || 0}}</td>
-					<td>{{player.stats.Deflection || 0}}</td>
-				</tr>
-				<tr>
-					<td colspan="7"><a href="" ng-click="addPlayer()">add player</a></td>
-				</tr>
-				</table>
+			<div layout="row">
+				<div class="md-padding" flex-gt-xs="50" flex-xs layout="column" layout-align="start center" ng-show="$mdMedia('gt-xs') || showAway">
+					<table class="playerTable">
+					<tr>
+						<th>Player</th>
+						<th>REC</th>
+						<th>YRD</th>
+						<th>PNT</th>
+						<th>PCK</th>
+						<th>FLG</th>
+						<th>DFT</th>
+					</tr>
+					<tr ng-repeat="player in game.teamAway.players | orderBy: 'number'" ng-click="addStat(player)">
+						<td>{{player.number}}. {{player.displayName}}</td>
+						<td>{{player.stats.Reception || 0}}</td>
+						<td>{{player.stats.Yards || 0}}</td>
+						<td>{{player.stats.Points || 0}}</td>
+						<td>{{player.stats.Pick || 0}}</td>
+						<td>{{player.stats.Flag || 0}}</td>
+						<td>{{player.stats.Deflection || 0}}</td>
+					</tr>
+					<tr>
+						<td class="addPlayer" colspan="7"><a href="" ng-click="addPlayer('away')">Add Player</a></td>
+					</tr>
+					</table>
+				</div>
+				
+				<div class="md-padding" flex-gt-xs="50" flex-xs layout="column" layout-align="start center" ng-show="$mdMedia('gt-xs') || showHome">
+					<table class="playerTable">
+					<tr>
+						<th>Player</th>
+						<th>REC</th>
+						<th>YRD</th>
+						<th>PNT</th>
+						<th>PCK</th>
+						<th>FLG</th>
+						<th>DFT</th>
+					</tr>
+					<tr ng-repeat="player in game.teamHome.players | orderBy: 'number'" ng-click="addStat(player)">
+						<td>{{player.number}}. {{player.displayName}}</td>
+						<td>{{player.stats.Reception || 0}}</td>
+						<td>{{player.stats.Yards || 0}}</td>
+						<td>{{player.stats.Points || 0}}</td>
+						<td>{{player.stats.Pick || 0}}</td>
+						<td>{{player.stats.Flag || 0}}</td>
+						<td>{{player.stats.Deflection || 0}}</td>
+					</tr>
+					<tr>
+						<td class="addPlayer" colspan="7"><a href="" ng-click="addPlayer('home')">Add Player</a></td>
+					</tr>
+					</table>
+				</div>
 			</div>
+			
+		</div>
 	</md-card>
 </md-content>

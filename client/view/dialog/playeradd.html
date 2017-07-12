@@ -1,56 +1,59 @@
-<div layout="column" class="editPanel">
-	<md-toolbar>
-		<div class="md-toolbar-tools" layout="row">
-			<md-button class="md-icon-button" aria-label="Close" ng-click="close()">
-				<md-icon>
-					<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-						<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-						<path d="M0 0h24v24H0z" fill="none"/>
-					</svg>
-				</md-icon>
-			</md-button>
+<md-dialog flex-xs="75" flex="40" flex-gt-md="20">
+	<md-dialog-content>
 			
-			<h2 flex="grow">Add Player</h2>
+		<md-toolbar>
+			<div class="md-toolbar-tools" layout="row">
+				<md-button class="md-icon-button" aria-label="Close" ng-click="close()">
+					<md-icon>
+						<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+							<path d="M0 0h24v24H0z" fill="none"/>
+						</svg>
+					</md-icon>
+				</md-button>
+				
+				<h2 flex="grow">Add Player</h2>
+				
+				<md-button class="md-icon-button" aria-label="Save" ng-click="save()" ng-disabled="isLoading">
+					<md-icon>
+						<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M0 0h24v24H0z" fill="none"/>
+							<path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+						</svg>
+					</md-icon>
+				</md-button>
+			</div>
+		</md-toolbar>
+		
+		<div ng-show="isLoading" flex="grow" layout="row" layout-align="center center">
+			<div layout="column">
+				<md-progress-circular class="md-primary md-margin" md-diameter="40"></md-progress-circular>
+				<div class="md-margin">Loading</div>
+			</div>
+		</div>
+		
+		<div layout="column" class="md-padding" ng-show="!isLoading">
 			
-			<md-button class="md-icon-button" aria-label="Save" ng-click="save()" ng-disabled="isLoading">
-				<md-icon>
-					<svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-						<path d="M0 0h24v24H0z" fill="none"/>
-						<path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
-					</svg>
-				</md-icon>
-			</md-button>
+			<div class="panelError" ng-show="errorMessage && errorMessage.length > 0">
+				{{errorMessage}}
+			</div>
+			
+			<md-input-container>
+				<label>Number</label>
+				<input ng-model="player.number" type="number" required>
+			</md-input-container>
+			
+			<md-input-container>
+				<label>First Name</label>
+				<input ng-model="player.firstName">
+			</md-input-container>
+			
+			<md-input-container>
+				<label>Last Name</label>
+				<input ng-model="player.lastName">
+			</md-input-container>
+			
 		</div>
-	</md-toolbar>
 	
-	<div ng-show="isLoading" flex="grow" layout="row" layout-align="center center">
-		<div layout="column">
-			<md-progress-circular class="md-primary md-margin" md-diameter="40"></md-progress-circular>
-			<div class="md-margin">Loading</div>
-		</div>
-	</div>
-	
-	<div layout="column" class="md-padding" ng-show="!isLoading">
-		
-		<div class="panelError" ng-show="errorMessage && errorMessage.length > 0">
-			{{errorMessage}}
-		</div>
-		
-		<md-input-container>
-			<label>Number</label>
-			<input ng-model="player.number" type="number" required>
-		</md-input-container>
-		
-		<md-input-container>
-			<label>First Name</label>
-			<input ng-model="player.firstName">
-		</md-input-container>
-		
-		<md-input-container>
-			<label>Last Name</label>
-			<input ng-model="player.lastName">
-		</md-input-container>
-		
-	</div>
-	
-</div>
+	</md-dialog-content>
+</md-dialog>

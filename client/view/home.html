@@ -32,7 +32,7 @@
 	</div>
 </md-toolbar>
 
-<md-content>
+<md-content layout-xs="column" layout="row" layout-align="center">
 	<div ng-show="isLoading" flex="grow" layout="row" layout-align="center center">
 		<div layout="column">
 			<md-progress-circular class="md-primary md-margin" md-diameter="40"></md-progress-circular>
@@ -44,7 +44,7 @@
 		{{errorMessage}}
 	</div>
 	
-	<md-card ng-repeat="game in games" ng-show="!isLoading">
+	<md-card ng-repeat="game in games" ng-show="!isLoading" flex-gt-xs="50" flex-gt-md="25">
 		<md-card-header  ng-click="loadGame(game)" class="selectGame">
 			<md-card-header-text>
 				<span class="md-caption">{{game.age}}</span>
