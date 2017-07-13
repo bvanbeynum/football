@@ -104,6 +104,18 @@ recApp.controller("homeCtl", function($scope, $http, $location, $rootScope, $coo
 			}
 		})
 		.then(function (response) {
+			$scope.gameDates = d3.nest()
+				.key(function (game) { return (new Date(game.created)).setHours(0,0,0,0); })
+				.entries(response.data.games)
+				.map(function (group) { 
+					return { 
+						gameDate: new Date(+group.key),
+						displayDate: ((new Date(+group.key)).getMonth() + 1) + "/" + (new Date(+group.key)).getDate() + "/" + (new Date(+group.key)).getFullYear(),
+						games: group.values
+					};
+				})
+				.sort(function (game1, game2) { return game2.gameDate - game1.gameDate });
+			
 			$scope.games = response.data.games
 				.sort(function (prev, curr) {
 					return (new Date(curr.created)) - (new Date(prev.created));

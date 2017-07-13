@@ -6,9 +6,16 @@
 .selectGame {
 	cursor: pointer;
 }
+.dateDividor {
+	padding: 10px;
+	margin: 15px 0px;
+	background: rgb(240,240,240);
+	text-align: center;
+	font-size: .8em;
+}
 </style>
 
-<md-toolbar>
+<md-toolbar layout="column">
 	<div class="md-toolbar-tools">
 		<md-button class="md-icon-button" aria-label="Settings" ng-click="openNav()">
 			<md-icon>
@@ -32,7 +39,8 @@
 	</div>
 </md-toolbar>
 
-<md-content layout-xs="column" layout="row" layout-align="center">
+<md-content layout="column">
+	
 	<div ng-show="isLoading" flex="grow" layout="row" layout-align="center center">
 		<div layout="column">
 			<md-progress-circular class="md-primary md-margin" md-diameter="40"></md-progress-circular>
@@ -44,55 +52,63 @@
 		{{errorMessage}}
 	</div>
 	
-	<md-card ng-repeat="game in games" ng-show="!isLoading" flex-gt-xs="50" flex-gt-md="25">
-		<md-card-header  ng-click="loadGame(game)" class="selectGame">
-			<md-card-header-text>
-				<span class="md-caption">{{game.age}}</span>
-			</md-card-header-text>
-		</md-card-header>
+	<div ng-repeat="gameDate in gameDates" layout="column">
+		<div class="dateDividor">{{gameDate.displayDate}}</div>
 		
-		<md-divider></md-divider>
+		<div layout-xs="column" layout="row" layout-align="center">
+			<md-card ng-repeat="game in gameDate.games" ng-show="!isLoading" flex-gt-xs="50" flex-gt-md="25">
+				<md-card-header  ng-click="loadGame(game)" class="selectGame">
+					<md-card-header-text>
+						<span class="md-caption">{{game.division}} - {{game.age}}</span>
+					</md-card-header-text>
+				</md-card-header>
+				
+				<md-divider></md-divider>
+				
+				<md-card-content class="md-padding selectGame" layout="row" layout-align="space-around" ng-click="loadGame(game)">
+					<div layout="column" layout-align="center center">
+						<div class="listIcon" md-colors="{background: game.teamAway.color}" layout="column" layout-align="center center">
+							<div class="listLetter">{{game.teamAway.letter}}</div>
+						</div>
+						
+						<div class="md-margin">{{game.teamAway.name}}</div>
+						
+						<div class="md-caption">(2 - 1)</div>
+					</div>
+					
+					<div class="score">{{game.teamAway.score}}</div>
+					<div class="score" layout="column" layout-align="space-between">
+						<div>-</div>
+						<div class="md-caption">at</div>
+					</div>
+					<div class="score">{{game.teamHome.score}}</div>
+					
+					<div layout="column" layout-align="center center">
+						<div class="listIcon" md-colors="{background: game.teamHome.color}" layout="column" layout-align="center center">
+							<div class="listLetter">{{game.teamHome.letter}}</div>
+						</div>
+						
+						<div class="md-margin">{{game.teamHome.name}}</div>
+						
+						<div class="md-caption">(3 - 0)</div>
+					</div>
+				</md-card-content>
+				
+				<md-divider></md-divider>
+				
+				<md-card-actions layout="row" layout-align="end center">
+					<md-button class="md-icon-button" aria-label="Delete" ng-click="deleteGame(game)">
+						<md-icon>
+							<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+								<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+								<path d="M0 0h24v24H0z" fill="none"/>
+							</svg>
+						</md-icon>
+					</md-button>
+				</md-card-actions>
+			</md-card>
+		</div>
 		
-		<md-card-content class="md-padding selectGame" layout="row" layout-align="space-around" ng-click="loadGame(game)">
-			<div layout="column" layout-align="center center">
-				<div class="listIcon" md-colors="{background: game.teamAway.color}" layout="column" layout-align="center center">
-					<div class="listLetter">{{game.teamAway.letter}}</div>
-				</div>
-				
-				<div class="md-margin">{{game.teamAway.name}}</div>
-				
-				<div class="md-caption">(2 - 1)</div>
-			</div>
-			
-			<div class="score">{{game.teamAway.score}}</div>
-			<div class="score" layout="column" layout-align="space-between">
-				<div>-</div>
-				<div class="md-caption">at</div>
-			</div>
-			<div class="score">{{game.teamHome.score}}</div>
-			
-			<div layout="column" layout-align="center center">
-				<div class="listIcon" md-colors="{background: game.teamHome.color}" layout="column" layout-align="center center">
-					<div class="listLetter">{{game.teamHome.letter}}</div>
-				</div>
-				
-				<div class="md-margin">{{game.teamHome.name}}</div>
-				
-				<div class="md-caption">(3 - 0)</div>
-			</div>
-		</md-card-content>
-		
-		<md-divider></md-divider>
-		
-		<md-card-actions layout="row" layout-align="end center">
-			<md-button class="md-icon-button" aria-label="Delete" ng-click="deleteGame(game)">
-				<md-icon>
-					<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-						<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-						<path d="M0 0h24v24H0z" fill="none"/>
-					</svg>
-				</md-icon>
-			</md-button>
-		</md-card-actions>
-	</md-card>
+	</div>
+	
 </md-content>

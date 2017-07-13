@@ -6,7 +6,7 @@
 </head>
 <body ng-controller="recCtl" layout>
 
-<div layout="row" flex="grow" ng-cloak>
+<div layout="column" flex ng-cloak>
 
 	<md-sidenav md-component-id="left" class="md-sidenav-left" md-whiteframe="4">
 		<md-toolbar class="md-primary">
@@ -27,7 +27,7 @@
 		</md-list>
 	</md-sidenav>
 	
-	<md-content flex="grow" layout="column" ng-view></md-content>
+	<md-content ng-view></md-content>
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
