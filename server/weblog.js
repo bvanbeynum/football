@@ -13,7 +13,7 @@ module.exports = function (request, response, next) {
 				requestIp: request.ip,
 				method: request.method,
 				host: request.header("Hostname"),
-				url: request.originalUrl,
+				url: request.url,
 				referrer: request.header("Referrer")
 			}).save();
 			
