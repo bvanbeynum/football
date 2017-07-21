@@ -53,5 +53,11 @@ module.exports = {
 		created: Date,
 		session: String,
 		login: [Date]
-	})
+	}),
+	
+	log: mongoose.model("log", new mongoose.Schema({
+		created: Date,
+		userId: String,
+		type: String
+	}, { strict: false }))
 };
